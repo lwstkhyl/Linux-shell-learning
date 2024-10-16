@@ -35,6 +35,7 @@
     - [正则表达式在脚本中的使用](#正则表达式在脚本中的使用)
     - [文本处理](#文本处理)
       - [cut](#cut)
+      - [awk](#awk)
 - [综合案例](#综合案例)
     - [归档文件](#归档文件)
 
@@ -699,6 +700,42 @@ ifconfig lo | grep netmask | cut -d " " -f 10
 # 127.0.0.1
 ```
 为什么是`-f 10`：因为这行前面有8个空格，相当于8列，inet是第9列，IP就是第10列
+###### awk
+比cut更强大的文本分析工具，可以把文件逐行读入，以空格为默认分隔符将每行切片
+`awk [选项参数] '/pattern1/{action1} /pattern2/{action2}' ... 文件`或`命令 | awk [选项参数] '/pattern1/{action1}' '/pattern2/{action2}' ...`
+- `pattern`：awk在文件中查找的内容（匹配模式），一般为正则表达式，注意要放在两个`/`里面。这部分相当于根据正则找符合条件的**行**，如果省略将会把所有行传入action中
+  `/pattern/`可替换成：
+  - `BEGIN`表示在所有数据读取前执行
+  - `END`表示在所有数据读取完成后执行
+- `action`：在找到匹配内容时执行的命令，就像大括号括起来的代码块。这部分接收前面pattern找到的行，并根据分隔符对这些行进行分隔
+  补充：action提供一个命令`print`，其中`$n`表示第n列
+
+**选项参数**：
+- `-F`指定分隔符，默认为空格
+- `-v`给一个变量赋值
+
+**例**：对`/etc/passwd`文件进行分析
+- 搜索以root开头的所有行，并输出该行的第7列
+  ```sh
+  # 原来的方式：先grep找行，再cut切出第7列
+  cat /etc/passwd | grep ^root | cut -d ":" -f 7
+  # awk
+  cat /etc/passwd | awk -F ":" '/^root/{print $7}'
+  # /bin/bash
+  ```
+- 搜索以root开头的所有行，并输出该行的第1和7列，中间以`,`连接
+  ```sh
+  cat /etc/passwd | awk -F ":" '/^root/{print $1","$7}'
+  # root,/bin/bash
+  ```
+  注：`,`必须加上双引号，要不不显示
+- 输出所有行的第1和7列，以`,`连接，在输出结果的最前面添加`"user,shell"`作为表头，在最后一行添加`---`
+  ```sh
+  cat /etc/passwd | awk -F ":" 'BEGIN{print "user,shell"}{print $1","$7} END{print "---"}'
+  ```
+  ![awk1](./md-image/awk1.png){:width=100 height=100}
+  ...
+  ![awk2](./md-image/awk2.png){:width=60 height=60}
 
 ### 综合案例
 ##### 归档文件
