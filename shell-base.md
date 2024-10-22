@@ -45,7 +45,7 @@
 <!-- 打开侧边预览：f1->Markdown Preview Enhanced: open...
 只有打开侧边预览时保存才自动更新目录 -->
 
-写在前面：此笔记来自b站课程[3天搞定Linux，1天搞定Shell](https://www.bilibili.com/video/BV1WY4y1H7d3) P66-P
+写在前面：此笔记来自b站课程[3天搞定Linux，1天搞定Shell](https://www.bilibili.com/video/BV1WY4y1H7d3) P66-P88
 ### 概述
 shell是外层应用程序与系统内核连接的桥梁，本质上一个命令行解释器——它接收应用程序/用户的命令，然后调用操作系统内核
 **基本格式**：
